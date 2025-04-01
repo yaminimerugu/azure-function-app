@@ -1,19 +1,38 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: Build
+    displayName: 'Build the Function App'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: |
+        npm install
+      displayName: 'Install Dependencies'
 
-trigger:
-- main
+- stage: Test
+  displayName: 'Test Stage'
+  jobs:
+  - job: Test
+    displayName: 'Run Unit Tests'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: |
+        npm test
+      displayName: 'Run Tests'
 
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- stage: Deploy
+  displayName: 'Deploy to Azure'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy Function to Azure'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: AzureFunctionApp@1
+      inputs:
+        azureSubscription: '$(azureSubscription)'  # Replace with your Azure service connection name
+        appName: 'myAzureFunctionApp'               # Replace with your Azure Function App name
+        package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
