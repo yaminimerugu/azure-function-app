@@ -33,6 +33,6 @@ stages:
     steps:
     - task: AzureFunctionApp@1
       inputs:
-        azureSubscription: '$(azureSubscription)'  # Replace with your Azure service connection name
-        appName: 'myAzureFunctionApp'               # Replace with your Azure Function App name
+        azureSubscription: 'Lab4-Connect'  # Replace with your Azure service connection name
+        appName: 'azure-function-app'               # Replace with your Azure Function App name
         package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
